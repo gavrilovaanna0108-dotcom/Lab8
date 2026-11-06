@@ -2,14 +2,15 @@
 #include <math.h>
 #include <locale.h>
 
-int task0(char ch1, char ch2, int count);
-int task1(int m, int n);
-int task2(double step);
+char task0_get_char(char ch1, char ch2, int count, int position);
+int task1(int m, int n, int *iterations);
+long long task4_pow2(int power);
+double task2_fx(double x);
 double task3(double a, int n);
 
 int main()
 {
-    setlocale(LC_ALL, "Ru");
+    setlocale(LC_ALL, "");
     int count;
     char ch1, ch2;
     printf("Введите количество символов: ");
@@ -20,7 +21,15 @@ int main()
     printf("Введите второй символ: ");
     scanf(" %c", &ch2);
 
-    task0(ch1, ch2, count);
+    putchar('+');
+    for (int start = 1; start <= count; start++)
+    {
+        char ch = task0_get_char(ch1, ch2, count, start);
+        putchar(ch);
+        putchar('!');
+    }
+    putchar('+');
+    putchar('\n');
 
     int m, n_task1;
     printf("Введите m: ");
@@ -28,7 +37,12 @@ int main()
     printf("Введите n: ");
     scanf("%d", &n_task1);
 
-    int sum_result = task1(m, n_task1);
+    int iterations = 0;
+    int sum_result = task1(m, n_task1, &iterations);
+    for (int k = 1; k <= iterations; k++)
+    {
+        printf("выполнено %d раз\n", k);
+    }
     printf("результат %d\n", sum_result);
 
     int power_n, limit_m;
@@ -39,10 +53,10 @@ int main()
 
     for (int i = 0; i <= power_n; i++)
     {
-        long long res = (long long)pow(2, i);
+        long long res = task4_pow2(i);
         printf("2^%-2d = %10lld\n", i, res);
     }
-    long long final_res = (long long)pow(2, power_n);
+    long long final_res = task4_pow2(power_n);
     if (final_res >= 1024 && final_res % 1024 == 0)
     {
         printf("Результат: %lldK\n", final_res / 1024);
@@ -50,10 +64,10 @@ int main()
     printf("Степени до числа %d в формате K:\n", limit_m);
     for (int i = 0;; i++)
     {
-        double val = pow(2, i);
+        long long val = task4_pow2(i);
         if (val > limit_m)
             break;
-        printf("2^%d = %.1fK\n", i, val / 1024.0);
+        printf("2^%d = %.1fK\n", i, (double)val / 1024.0);
     }
 
     double step;
@@ -63,7 +77,18 @@ int main()
         printf("Некорректный шаг!\n");
         return 1;
     }
-    task2(step);
+
+    double start_x = 0.1;
+    double end_x = 2.2;
+    printf("_______________________\n");
+    printf("|    x    |    f(x)   |\n");
+    printf("|---------|-----------|\n");
+    for (double x = start_x; x <= end_x + 1e-9; x += step)
+    {
+        double y = task2_fx(x);
+        printf("|  %5.2f  |  %8.4f |\n", x, y);
+    }
+    printf("-----------------------\n");
 
     double a_val;
     int n_task3;
@@ -82,48 +107,40 @@ int main()
     return 0;
 }
 
-int task0(char ch1, char ch2, int count)
+char task0_get_char(char ch1, char ch2, int count, int position)
 {
-    putchar('+');
-    for (int start = 1; start <= count; start++)
-    {
-        if (start <= count / 2)
-            putchar(ch1);
-        else
-            putchar(ch2);
-        putchar('!');
-    }
-    putchar('+');
-    putchar('\n');
-    return 0;
+    if (position <= count / 2)
+        return ch1;
+    else
+        return ch2;
 }
 
-int task1(int m, int n)
+int task1(int m, int n, int *iterations)
 {
-    int s = 0, k = 1;
+    int s = 0;
+    *iterations = 0;
     for (int i = m; i >= n; i--)
     {
         s += i;
-        printf("выполнено %d раз\n", k++);
+        (*iterations)++;
     }
     return s;
 }
 
-int task2(double step)
+long long task4_pow2(int power)
 {
-    double start_x = 0.1;
-    double end_x = 2.2;
-    printf("_______________________\n");
-    printf("|    x    |    f(x)   |\n");
-    printf("|---------|-----------|\n");
-    for (double x = start_x; x <= end_x + 1e-9; x += step)
+    long long res = 1;
+    for (int i = 0; i < power; i++)
     {
-        double cos_val = cos(x + 1.0);
-        double y = (x * x) - (cos_val * cos_val);
-        printf("|  %5.2f  |  %8.4f |\n", x, y);
+        res *= 2;
     }
-    printf("-----------------------\n");
-    return 0;
+    return res;
+}
+
+double task2_fx(double x)
+{
+    double cos_val = cos(x + 1.0);
+    return (x * x) - (cos_val * cos_val);
 }
 
 double task3(double a, int n)
