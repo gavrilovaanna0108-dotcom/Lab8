@@ -10,7 +10,7 @@ double task3(double a, int n);
 
 int main()
 {
-    setlocale(LC_ALL, "");
+    setlocale(LC_CTYPE, "RUS");
     int count;
     char ch1, ch2;
     printf("Введите количество символов: ");
